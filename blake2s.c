@@ -81,17 +81,17 @@ static void blake2s_compress(blake2s_ctx *ctx, int last)
         ctx->h[i] ^= v[i] ^ v[i + 8];
 }
 
-// Initialize the state. key is optional (keylen=0 means no key)
+// Initialize the state. key is optional 
 
 int blake2s_init(blake2s_ctx *ctx, size_t outlen,
-    const void *key, size_t keylen)
+    const void *key, size_t keylen)		// (keylen=0: no key)
 {
     size_t i;
 
     if (outlen == 0 || outlen > 32 || keylen > 32)
         return -1;                      // illegal parameters
 
-    for (i = 0; i < 8; i++)             // state and "param block"
+    for (i = 0; i < 8; i++)             // state, "param block"
         ctx->h[i] = blake2s_iv[i];
     ctx->h[0] ^= 0x01010000 ^ (keylen << 8) ^ outlen;
 
@@ -112,7 +112,8 @@ int blake2s_init(blake2s_ctx *ctx, size_t outlen,
 
 // update with new data
 
-void blake2s_update(blake2s_ctx *ctx, const void *in, size_t inlen)
+void blake2s_update(blake2s_ctx *ctx, 
+    const void *in, size_t inlen)		// data bytes
 {
     size_t i;
 
@@ -152,8 +153,8 @@ void blake2s_final(blake2s_ctx *ctx, void *out)
 // convenience function for all-in-one computation
 
 int blake2s(void *out, size_t outlen,
-         const void *key, size_t keylen,
-         const void *in, size_t inlen)
+    const void *key, size_t keylen,
+    const void *in, size_t inlen)
 {
     blake2s_ctx ctx;
 
