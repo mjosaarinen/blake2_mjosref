@@ -88,8 +88,8 @@ int blake2s_init(blake2s_ctx *ctx, size_t outlen,
 {
     size_t i;
 
-    if (outlen > 32 || keylen > 32)     // illegal parameters
-        return -1;
+    if (outlen == 0 || outlen > 32 || keylen > 32)
+        return -1;                      // illegal parameters
 
     for (i = 0; i < 8; i++)             // state and "param block"
         ctx->h[i] = blake2s_iv[i];
