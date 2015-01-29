@@ -53,7 +53,7 @@ static void blake2s_compress(blake2s_ctx *ctx, int last)
     int i;
     uint32_t v[16], m[16];
 
-    for (i = 0; i < 8; i++) {       // intialize working variables
+    for (i = 0; i < 8; i++) {           // intialize working variables
         v[i] = ctx->h[i];
         v[i + 8] = blake2s_iv[i];
     }
@@ -63,7 +63,7 @@ static void blake2s_compress(blake2s_ctx *ctx, int last)
     if (last)                           // last block flag set ?
         v[14] = ~v[14];
 
-    for (i = 0; i < 16; i++)        // get little-endian words
+    for (i = 0; i < 16; i++)            // get little-endian words
         m[i] = B2S_GET32(&ctx->b[4 * i]);
 
     for (i = 0; i < 10; i++) {      // ten rounds
@@ -100,11 +100,11 @@ int blake2s_init(blake2s_ctx *ctx, size_t outlen,
     ctx->c = 0;                         // pointer within buffer
     ctx->outlen = outlen;
 
-    for (i = keylen; i < 64; i++)   // zero input block
+    for (i = keylen; i < 64; i++)       // zero input block
         ctx->b[i] = 0;
     if (keylen > 0) {
         blake2s_update(ctx, key, keylen);
-        ctx->c = 64;                // at the end
+        ctx->c = 64;                    // at the end
     }
 
     return 0;
