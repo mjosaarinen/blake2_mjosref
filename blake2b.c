@@ -77,7 +77,7 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
     for (i = 0; i < 16; i++)            // get little-endian words
         m[i] = B2B_GET64(&ctx->b[8 * i]);
 
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < 12; i++) {          // twelve rounds
         B2B_G( 0, 4,  8, 12, m[sigma[i][ 0]], m[sigma[i][ 1]]);
         B2B_G( 1, 5,  9, 13, m[sigma[i][ 2]], m[sigma[i][ 3]]);
         B2B_G( 2, 6, 10, 14, m[sigma[i][ 4]], m[sigma[i][ 5]]);
