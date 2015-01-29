@@ -64,13 +64,13 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
     int i;
     uint64_t v[16], m[16];
 
-    for (i = 0; i < 8; i++) {           // intialize working variables
+    for (i = 0; i < 8; i++) {           // init work variables
         v[i] = ctx->h[i];
         v[i + 8] = blake2b_iv[i];
     }
 
     v[12] ^= ctx->t[0];                 // low 64 bits of offset
-    v[13] ^= ctx->t[1];                 // high (basically never nonzero)
+    v[13] ^= ctx->t[1];                 // high 64 bits (well, 0)
     if (last)                           // last block flag set ?
         v[14] = ~v[14];
 
