@@ -17,7 +17,7 @@ typedef struct {
 } blake2s_ctx;
 
 // Initialize the hashing context "ctx" with optional key "key".
-//      1 <= outlen <= 64 gives the digest size in bytes.
+//      1 <= outlen <= 32 gives the digest size in bytes.
 //      Secret key is optional (keylen = 0).
 
 int blake2s_init(blake2s_ctx *ctx, size_t outlen,
