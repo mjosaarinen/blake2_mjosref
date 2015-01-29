@@ -95,7 +95,7 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
 // Initialize the state. key is optional
 
 int blake2b_init(blake2b_ctx *ctx, size_t outlen,
-    const void *key, size_t keylen)		// (keylen=0: no key)
+    const void *key, size_t keylen)     // (keylen=0: no key)
 {
     size_t i;
 
@@ -124,7 +124,7 @@ int blake2b_init(blake2b_ctx *ctx, size_t outlen,
 // update with new data
 
 void blake2b_update(blake2b_ctx *ctx,
-    const void *in, size_t inlen)		// data bytes
+    const void *in, size_t inlen)       // data bytes
 {
     size_t i;
 

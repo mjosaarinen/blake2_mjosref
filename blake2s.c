@@ -59,7 +59,7 @@ static void blake2s_compress(blake2s_ctx *ctx, int last)
     }
 
     v[12] ^= ctx->t[0];                 // low 32 bits of offset
-    v[13] ^= ctx->t[1];                 // high 32 bits 
+    v[13] ^= ctx->t[1];                 // high 32 bits
     if (last)                           // last block flag set ?
         v[14] = ~v[14];
 
@@ -81,10 +81,10 @@ static void blake2s_compress(blake2s_ctx *ctx, int last)
         ctx->h[i] ^= v[i] ^ v[i + 8];
 }
 
-// Initialize the state. key is optional 
+// Initialize the state. key is optional
 
 int blake2s_init(blake2s_ctx *ctx, size_t outlen,
-    const void *key, size_t keylen)		// (keylen=0: no key)
+    const void *key, size_t keylen)     // (keylen=0: no key)
 {
     size_t i;
 
@@ -112,8 +112,8 @@ int blake2s_init(blake2s_ctx *ctx, size_t outlen,
 
 // update with new data
 
-void blake2s_update(blake2s_ctx *ctx, 
-    const void *in, size_t inlen)		// data bytes
+void blake2s_update(blake2s_ctx *ctx,
+    const void *in, size_t inlen)       // data bytes
 {
     size_t i;
 
