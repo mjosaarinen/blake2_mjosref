@@ -45,7 +45,7 @@ void hexout(uint8_t *vec, size_t len)
     printf("\n");
 }
 
-// output test vectors
+// output BLAKE2b test vectors
 
 void blake2b_testvecs()
 {
@@ -76,12 +76,12 @@ void blake2b_testvecs()
     }
 }
 
-// output test vectors
+// output BLAKE2s test vectors
 
 void blake2s_testvecs()
 {
     const size_t b2s_md_len[4] = { 16, 20, 24, 32 };
-    const size_t b2s_in_len[6] = { 0,  3,  128, 129, 255, 1024 };
+    const size_t b2s_in_len[6] = { 0,  3,  64, 65, 255, 1024 };
 
     size_t i, j, outlen, inlen;
     uint8_t in[1024], md[32], key[32];
