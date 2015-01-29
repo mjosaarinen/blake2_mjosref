@@ -1,4 +1,4 @@
-// main.c
+// test_main.c
 // 24-Jan-15  Markku-Juhani O. Saarinen <mjos@iki.fi>
 
 // This is an "condensed" test driver for the BLAKE2 Algorithms.
