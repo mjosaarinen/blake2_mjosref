@@ -4,7 +4,7 @@
 
 #include "blake2b.h"
 
-// right rotation
+// cyclic right rotation
 
 #ifndef ROTR64
 #define ROTR64(x, y)  (((x) >> (y)) ^ ((x) << (64 - (y))))

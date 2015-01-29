@@ -1,11 +1,11 @@
-// b2s.c
+// blake2s.c
 // 25-Jan-15  Markku-Juhani O. Saarinen <mjos@iki.fi>
-
-// Slightly smaller BLAKE2s Reference Implementation
+// A simple BLAKE2b Reference Implementation
 
 #include "blake2s.h"
 
 // cyclic right rotation
+
 #ifndef ROTR32
 #define ROTR32(x, y)  (((x) >> (y)) ^ ((x) << (32 - (y))))
 #endif
