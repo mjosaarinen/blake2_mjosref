@@ -70,7 +70,7 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
     }
 
     v[12] ^= ctx->t[0];                 // low 64 bits of offset
-    v[13] ^= ctx->t[1];                 // high 64 bits (well, 0)
+    v[13] ^= ctx->t[1];                 // high 64 bits
     if (last)                           // last block flag set ?
         v[14] = ~v[14];
 
