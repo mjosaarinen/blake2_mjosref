@@ -11,15 +11,14 @@
 typedef struct {
     uint8_t b[64];                      // input buffer
     uint32_t h[8];                      // chained state
-    uint32_t t[2];                      // total # of bytes
-    size_t c;                           // pointer for buffer
+    uint32_t t[2];                      // total number of bytes
+    size_t c;                           // pointer for b[]
     size_t outlen;                      // digest size
 } blake2s_ctx;
 
 // Initialize the hashing context "ctx" with optional key "key".
 //      1 <= outlen <= 32 gives the digest size in bytes.
 //      Secret key (also <= 32 bytes) is optional (keylen = 0).
-
 int blake2s_init(blake2s_ctx *ctx, size_t outlen,
     const void *key, size_t keylen);    // secret key
 

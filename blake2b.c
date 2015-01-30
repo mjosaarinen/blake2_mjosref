@@ -4,7 +4,7 @@
 
 #include "blake2b.h"
 
-// right rotation
+// cyclic right rotation
 
 #ifndef ROTR64
 #define ROTR64(x, y)  (((x) >> (y)) ^ ((x) << (64 - (y))))
@@ -43,7 +43,7 @@ static const uint64_t blake2b_iv[8] = {
     0x1F83D9ABFB41BD6B, 0x5BE0CD19137E2179
 };
 
-// Compression function. "last" is a Boolean flag indicating last block.
+// Compression function. "last" flag indicates last block.
 
 static void blake2b_compress(blake2b_ctx *ctx, int last)
 {

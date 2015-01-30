@@ -1,11 +1,11 @@
-// b2s.c
+// blake2s.c
 // 25-Jan-15  Markku-Juhani O. Saarinen <mjos@iki.fi>
-
-// Slightly smaller BLAKE2s Reference Implementation
+// A simple BLAKE2b Reference Implementation
 
 #include "blake2s.h"
 
 // cyclic right rotation
+
 #ifndef ROTR32
 #define ROTR32(x, y)  (((x) >> (y)) ^ ((x) << (32 - (y))))
 #endif
@@ -34,7 +34,7 @@ static const uint32_t blake2s_iv[8] =
     0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19
 };
 
-// compression function
+// Compression function. "last" flag indicates last block.
 
 static void blake2s_compress(blake2s_ctx *ctx, int last)
 {
