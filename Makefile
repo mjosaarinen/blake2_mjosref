@@ -14,9 +14,6 @@ INCS	=
 $(BIN):	$(OBJS)
 	$(CC) $(LDFLAGS) -o $(BIN) $(OBJS) $(LIBS)
 
-test:	$(BIN)
-	bash testvec.sh
-
 .c.o:
 	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
 
