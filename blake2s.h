@@ -35,8 +35,5 @@ int blake2s(void *out, size_t outlen,   // return buffer for digest
     const void *key, size_t keylen,     // optional secret key
     const void *in, size_t inlen);      // data to be hashed
 
-// Fast self-test validation. Return 0 when OK.
-int blake2s_selftest();
-
 #endif
 
