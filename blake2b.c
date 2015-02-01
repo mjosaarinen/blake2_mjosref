@@ -34,7 +34,7 @@
     v[c] = v[c] + v[d];             \
     v[b] = ROTR64(v[b] ^ v[c], 63); }
 
-// intialization vector
+// Initialization Vector
 
 static const uint64_t blake2b_iv[8] = {
     0x6A09E667F3BCC908, 0xBB67AE8584CAA73B,

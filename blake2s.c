@@ -28,6 +28,8 @@
     v[c] = v[c] + v[d];             \
     v[b] = ROTR32(v[b] ^ v[c], 7); }
 
+// Initialization Vector
+
 static const uint32_t blake2s_iv[8] =
 {
     0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
