@@ -95,7 +95,7 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
 // Initialize the state. key is optional
 
 int blake2b_init(blake2b_ctx *ctx, size_t outlen,
-    const void *key, size_t keylen)     // (keylen=0: no key)
+    const void *key, size_t keylen)		// (keylen=0: no key)
 {
     size_t i;
 
@@ -150,7 +150,7 @@ void blake2b_final(blake2b_ctx *ctx, void *out)
     if (ctx->t[0] < ctx->c)             // carry overflow
         ctx->t[1]++;                    // high word
 
-    while (ctx->c < 128)                // fill up with zeros
+    while (ctx->c < 128)            	// fill up with zeros
         ctx->b[ctx->c++] = 0;
     blake2b_compress(ctx, 1);           // final block flag = 1
 
