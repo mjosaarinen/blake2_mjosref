@@ -10,7 +10,7 @@ Expires: August 5, 2015                                Kudelski Security
 
 
                  The BLAKE2 Cryptographic Hash and MAC
-                        draft-saarinen-blake2-00
+                        draft-saarinen-blake2-01
 
 Abstract
 
@@ -76,7 +76,7 @@ Table of Contents
      3.1.  Mixing Function G . . . . . . . . . . . . . . . . . . . .   6
      3.2.  Compression Function F  . . . . . . . . . . . . . . . . .   6
      3.3.  Padding data and Computing a BLAKE2 Digest  . . . . . . .   8
-   4.  Standard Parameters and Algorithm Identifiers . . . . . . . .   9
+   4.  Standard Parameter Sets and Algorithm Identifiers . . . . . .   9
    5.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
@@ -86,36 +86,17 @@ Table of Contents
    Appendix A.  BLAKE2b Implementation C Source  . . . . . . . . . .  11
      A.1.  blake2b.h . . . . . . . . . . . . . . . . . . . . . . . .  11
      A.2.  blake2b.c . . . . . . . . . . . . . . . . . . . . . . . .  12
-   Appendix B.  BLAKE2s Implementation C Source  . . . . . . . . . .  15
-     B.1.  blake2s.h . . . . . . . . . . . . . . . . . . . . . . . .  15
-     B.2.  blake2s.c . . . . . . . . . . . . . . . . . . . . . . . .  16
+   Appendix B.  BLAKE2s Implementation C Source  . . . . . . . . . .  16
+     B.1.  blake2s.h . . . . . . . . . . . . . . . . . . . . . . . .  16
+     B.2.  blake2s.c . . . . . . . . . . . . . . . . . . . . . . . .  17
    Appendix C.  BLAKE2b and BLAKE2s Self Test Module C Source  . . .  20
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  23
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
 
 1.  Introduction and Terminology
 
    The [BLAKE2] cryptographic hash function was designed by Jean-
    Philippe Aumasson, Samuel Neves, Zooko Wilcox-O'Hearn, and Christian
    Winnerlein.
-
-   The BLAKE2 hash function MAY be used by digital signature algorithms
-   and message authentication and integrity protection mechanisms in
-   applications such as Public Key Infrastructure (PKI), secure
-   communication protocols, cloud storage, intrusion detection, forensic
-   suites, and version control systems.
-
-   BLAKE2 provides an efficient alternative to US Secure Hash Algorithms
-   SHA and HMAC-SHA [RFC6234].  Note that BLAKE2 algorithms do not
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 2]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
-   require a special "HMAC" construction for keyed message
-   authentication as they have a built-in keying mechanism.
 
    BLAKE2 comes in two basic flavors:
 
@@ -125,8 +106,29 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    o  BLAKE2s is optimized for 8- to 32-bit platforms, and produces
       digests of any size between 1 and 32 bytes.
 
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                 [Page 2]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
    Both BLAKE2b and BLAKE2s are believed to be highly secure and have
-   good performance on any platform, software or hardware.
+   good performance on any platform, software or hardware.  BLAKE2 does
+   not require a special "HMAC" construction for keyed message
+   authentication as they have a built-in keying mechanism.
+
+   The BLAKE2 hash function may be used by digital signature algorithms
+   and message authentication and integrity protection mechanisms in
+   applications such as Public Key Infrastructure (PKI), secure
+   communication protocols, cloud storage, intrusion detection, forensic
+   suites, and version control systems.
+
+   The BLAKE2 suite provides a more efficient alternative to US Secure
+   Hash Algorithms SHA and HMAC-SHA [RFC6234].  BLAKE2-128 is especially
+   suited as a fast and more secure plug-in replacement to MD5 and HMAC-
+   MD5 in legacy applications [RFC6151].
 
    A reference implementation in C programming language for BLAKE2b can
    be found in Appendix A and for BLAKE2s in Appendix B of this
@@ -138,30 +140,28 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    information about compliance testing and integrating BLAKE2 into
    various applications.
 
-   The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD,
-   SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL, when they appear in this
-   document, are to be interpreted as described in [RFC2119].
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in RFC 2119.
 
 2.  Conventions, Variables, and Constants
 
 2.1.  Parameters
 
-   The following table summarizes various parameters and their
-   acceptable ranges for the two variants.  These constants and
-   variables are used in the algorithm descriptions in Section 3.
+   The following table summarizes various parameters and their ranges:
 
-                      | BLAKE2b          | BLAKE2s          |
-        --------------+------------------+------------------+
-         Bits in word | w = 64           | w = 32           |
-         Rounds in F  | r = 12           | r = 10           |
-         Block bytes  | bb = 128         | bb = 64          |
-         Hash bytes   | 1 <= nn <= 64    | 1 <= nn <= 32    |
-         Key bytes    | 0 <= kk <= 64    | 0 <= kk <= 32    |
-         Input bytes  | 0 <= ll < 2**128 | 0 <= ll < 2**64  |
-        --------------+------------------+------------------+
-         G Rotation   | (R1, R2, R3, R4) | (R1, R2, R3, R4) |
-          constants = | (32, 24, 16, 63) | (16, 12,  8,  7) |
-        --------------+------------------+------------------+
+                         | BLAKE2b          | BLAKE2s          |
+           --------------+------------------+------------------+
+            Bits in word | w = 64           | w = 32           |
+            Rounds in F  | r = 12           | r = 10           |
+            Block bytes  | bb = 128         | bb = 64          |
+            Hash bytes   | 1 <= nn <= 64    | 1 <= nn <= 32    |
+            Key bytes    | 0 <= kk <= 64    | 0 <= kk <= 32    |
+            Input bytes  | 0 <= ll < 2**128 | 0 <= ll < 2**64  |
+           --------------+------------------+------------------+
+            G Rotation   | (R1, R2, R3, R4) | (R1, R2, R3, R4) |
+             constants = | (32, 24, 16, 63) | (16, 12,  8,  7) |
+           --------------+------------------+------------------+
 
 
 
@@ -214,8 +214,8 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 2.4.  Little-Endian Interpretation of Words as Byte Sequences
 
-
-
+   All mathematical operations are on 64-bit words in BLAKE2b and on
+   32-bit words on BLAKE2b.
 
 
 
@@ -226,11 +226,9 @@ Saarinen & Aumasson      Expires August 5, 2015                 [Page 4]
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
-   All mathematical operations are on 64-bit words in BLAKE2b and on
-   32-bit words on BLAKE2b. We may also perform operations on vectors of
-   words.  Vector indexing is zero-based; the first element of an
-   n-element vector "v" is v[0] and the last one is v[n - 1].  All
-   elements is denoted by v[0..n-1].
+   We may also perform operations on vectors of words.  Vector indexing
+   is zero-based; the first element of an n-element vector "v" is v[0]
+   and the last one is v[n - 1].  All elements is denoted by v[0..n-1].
 
    Byte (octet) streams are interpreted as words in little-endian order,
    with the least significant byte first.  Consider this sequence of
@@ -248,8 +246,8 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
    We specify the parameter block words p[0..7] as follows:
 
-           byte offset:    3 2 1 0
-                 p[0] = 0x0101kknn    p[1..7] = 0  (otherwise empty)
+       byte offset:    3 2 1 0     (otherwise zero)
+             p[0] = 0x0101kknn     p[1..7] = 0
 
    Here the "nn" byte specifies the hash size in bytes.  The second
    (little-endian) byte of parameter block, "kk", specifies key size in
@@ -269,10 +267,12 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
                is the i:th prime number ( 2, 3, 5, 7, 11, 13, 17, 19 )
                and sqrt(x) is the square root of x.
 
+   The numerical values of IV can be also found in implementations in
+   Appendix A and Appendix B for BLAkE2b and BLAKE2s, respectively.
+
    NOTE.  BLAKE2b IV is the same as SHA-512 IV and BLAKE2s IV is the
-   same as SHA-256 IV; see [RFC6234].  The numerical values of IV can be
-   also found in implementations in Appendix A and Appendix B for
-   BLAkE2b and BLAKE2s, respectively.
+   same as SHA-256 IV; see [RFC6234].
+
 
 
 
@@ -450,15 +450,14 @@ Saarinen & Aumasson      Expires August 5, 2015                 [Page 8]
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
-4.  Standard Parameters and Algorithm Identifiers
+4.  Standard Parameter Sets and Algorithm Identifiers
 
    An implementation of BLAKE2b and / or BLAKE2s SHOULD support the
    following digest size parameters for interoperability (e.g. digital
    signatures), as long as sufficient level of security is attained by
    the parameter selections.  These parameters and identifiers are
-   intended as plug-in replacements to corresponding SHA algorithms.
-
-   Keyed hashing is OPTIONAL.  Implementation of BLAKE2s is OPTIONAL.
+   intended to be suitable as plug-in replacements to corresponding SHA
+   algorithms.
 
    For unkeyed hashing, developers adapting BLAKE2 to ASN.1 - based
    message formats SHOULD use the OID tree at x = 1.3.6.1.4.1.1722.12.2.
@@ -497,6 +496,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        id-blake2s160 OBJECT IDENTIFIER ::= { blake2s 20 }
        id-blake2s224 OBJECT IDENTIFIER ::= { blake2s 28 }
        id-blake2s256 OBJECT IDENTIFIER ::= { blake2s 32 }
+
 
 
 
@@ -565,12 +565,18 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", RFC 2119, BCP 14, March 1997.
 
+   [RFC6151]  Turner, S. and L. Chen, "Updated Security Considerations
+              for the MD5 Message-Digest and the HMAC-MD5 Algorithms",
+              RFC 6151, March 2011.
+
    [RFC6234]  Eastlake, D. and T. Hansen, "US Secure Hash Algorithms
               (SHA and SHA-based HMAC and HKDF)", RFC 6234, May 2011.
 
 Appendix A.  BLAKE2b Implementation C Source
 
 A.1.  blake2b.h
+
+   <CODE BEGINS>
 
    // blake2b.h
    // BLAKE2b Hashing Context and API Prototypes
@@ -604,12 +610,6 @@ A.1.  blake2b.h
    //      Result placed in "out"
    void blake2b_final(blake2b_ctx *ctx, void *out);
 
-   // All-in-one convenience function.
-   int blake2b(void *out, size_t outlen,   // return buffer for digest
-       const void *key, size_t keylen,     // optional secret key
-       const void *in, size_t inlen);      // data to be hashed
-
-   #endif
 
 
 
@@ -618,7 +618,18 @@ Saarinen & Aumasson      Expires August 5, 2015                [Page 11]
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
+   // All-in-one convenience function.
+   int blake2b(void *out, size_t outlen,   // return buffer for digest
+       const void *key, size_t keylen,     // optional secret key
+       const void *in, size_t inlen);      // data to be hashed
+
+   #endif
+
+   <CODE ENDS>
+
 A.2.  blake2b.c
+
+   <CODE BEGINS>
 
    // blake2b.c
    // A simple BLAKE2b Reference Implementation
@@ -655,6 +666,14 @@ A.2.  blake2b.c
        v[c] = v[c] + v[d];             \
        v[b] = ROTR64(v[b] ^ v[c], 63); }
 
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 12]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
    // Initialization Vector
 
    static const uint64_t blake2b_iv[8] = {
@@ -665,14 +684,6 @@ A.2.  blake2b.c
    };
 
    // Compression function. "last" flag indicates last block.
-
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 12]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
 
    static void blake2b_compress(blake2b_ctx *ctx, int last)
    {
@@ -711,6 +722,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
            B2B_G( 1, 5,  9, 13, m[sigma[i][ 2]], m[sigma[i][ 3]]);
            B2B_G( 2, 6, 10, 14, m[sigma[i][ 4]], m[sigma[i][ 5]]);
            B2B_G( 3, 7, 11, 15, m[sigma[i][ 6]], m[sigma[i][ 7]]);
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 13]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
            B2B_G( 0, 5, 10, 15, m[sigma[i][ 8]], m[sigma[i][ 9]]);
            B2B_G( 1, 6, 11, 12, m[sigma[i][10]], m[sigma[i][11]]);
            B2B_G( 2, 7,  8, 13, m[sigma[i][12]], m[sigma[i][13]]);
@@ -722,13 +741,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    }
 
    // Initialize the state. key is optional
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 13]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
 
    int blake2b_init(blake2b_ctx *ctx, size_t outlen,
        const void *key, size_t keylen)     // (keylen=0: no key)
@@ -766,6 +778,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
        for (i = 0; i < inlen; i++) {
            if (ctx->c == 128) {            // buffer full ?
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 14]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
                ctx->t[0] += ctx->c;        // add counters
                if (ctx->t[0] < ctx->c)     // carry overflow ?
                    ctx->t[1]++;            // high word
@@ -777,14 +797,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    }
 
    // finalize
-
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 14]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
 
    void blake2b_final(blake2b_ctx *ctx, void *out)
    {
@@ -820,10 +832,21 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
        return 0;
    }
+   <CODE ENDS>
+
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 15]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
 
 Appendix B.  BLAKE2s Implementation C Source
 
 B.1.  blake2s.h
+
+   <CODE BEGINS>
 
    // blake2s.h
    // BLAKE2s Hashing Context and API Prototypes
@@ -833,14 +856,6 @@ B.1.  blake2s.h
 
    #include <stdint.h>
    #include <stddef.h>
-
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 15]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
 
    // state context
    typedef struct {
@@ -872,7 +887,20 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
    #endif
 
+   <CODE ENDS>
+
+
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 16]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
 B.2.  blake2s.c
+
+   <CODE BEGINS>
 
    // blake2s.c
    // A simple BLAKE2 Reference Implementation
@@ -890,14 +918,6 @@ B.2.  blake2s.c
        (((uint32_t) ((uint8_t *) (p))[0]) ^        \
        (((uint32_t) ((uint8_t *) (p))[1]) << 8) ^  \
        (((uint32_t) ((uint8_t *) (p))[2]) << 16) ^ \
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 16]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
        (((uint32_t) ((uint8_t *) (p))[3]) << 24))
 
    // Mixing function G
@@ -926,6 +946,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        const uint8_t sigma[10][16] = {
            { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
            { 14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3 },
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 17]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
            { 11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4 },
            { 7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8 },
            { 9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13 },
@@ -946,14 +974,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        v[12] ^= ctx->t[0];                 // low 32 bits of offset
        v[13] ^= ctx->t[1];                 // high 32 bits
        if (last)                           // last block flag set ?
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 17]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
            v[14] = ~v[14];
 
        for (i = 0; i < 16; i++)            // get little-endian words
@@ -982,6 +1002,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        size_t i;
 
        if (outlen == 0 || outlen > 32 || keylen > 32)
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 18]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
            return -1;                      // illegal parameters
 
        for (i = 0; i < 8; i++)             // state, "param block"
@@ -1002,13 +1030,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
        return 0;
    }
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 18]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
 
    // update with new data
 
@@ -1037,6 +1058,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
        ctx->t[0] += ctx->c;                // mark last block offset
        if (ctx->t[0] < ctx->c)             // carry overflow
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 19]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
            ctx->t[1]++;                    // high word
 
        while (ctx->c < 64)                 // fill up with zeros
@@ -1058,14 +1087,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    {
        blake2s_ctx ctx;
 
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 19]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
        if (blake2s_init(&ctx, outlen, key, keylen))
            return -1;
        blake2s_update(&ctx, in, inlen);
@@ -1073,6 +1094,8 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
        return 0;
    }
+
+   <CODE ENDS>
 
 Appendix C.  BLAKE2b and BLAKE2s Self Test Module C Source
 
@@ -1088,7 +1111,17 @@ Appendix C.  BLAKE2b and BLAKE2s Self Test Module C Source
    Power-On Self Test (POST) to be performed every time the
    cryptographic module is loaded [FIPS140-2IG].
 
+   <CODE BEGINS>
+
    // test_main.c
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 20]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
+
    // Self test Modules for BLAKE2b and BLAKE2s -- and a stub main().
 
    #include <stdio.h>
@@ -1114,14 +1147,6 @@ Appendix C.  BLAKE2b and BLAKE2s Self Test Module C Source
        }
    }
 
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 20]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
    // BLAKE2b self-test validation. Return 0 when OK.
 
    int blake2b_selftest()
@@ -1144,6 +1169,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        // 256-bit hash for testing
        if (blake2b_init(&ctx, 32, NULL, 0))
            return -1;
+
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 21]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
 
        for (i = 0; i < 4; i++) {
            outlen = b2b_md_len[i];
@@ -1170,14 +1203,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        return 0;
    }
 
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 21]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
    // BLAKE2s self-test validation. Return 0 when OK.
 
    int blake2s_selftest()
@@ -1200,6 +1225,14 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        // 256-bit hash for testing
        if (blake2s_init(&ctx, 32, NULL, 0))
            return -1;
+
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 22]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
+
 
        for (i = 0; i < 4; i++) {
            outlen = b2s_md_len[i];
@@ -1226,14 +1259,6 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        return 0;
    }
 
-
-
-
-Saarinen & Aumasson      Expires August 5, 2015                [Page 22]
-
-Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
-
-
    // test driver
 
    int main(int argc, char **argv)
@@ -1246,8 +1271,23 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        return 0;
    }
 
+   <CODE ENDS>
 
 
+
+
+
+
+
+
+
+
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 23]
+
+Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 Authors' Addresses
@@ -1256,7 +1296,7 @@ Authors' Addresses
    Independent Consultant
 
    Email: mjos@iki.fi
-   URI:   https://www.mjos.fi
+   URI:   https://mjos.fi
 
 
    Jean-Philippe Aumasson
@@ -1285,4 +1325,20 @@ Authors' Addresses
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 23]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Saarinen & Aumasson      Expires August 5, 2015                [Page 24]
