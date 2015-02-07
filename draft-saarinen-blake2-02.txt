@@ -5,12 +5,12 @@
 Internet Engineering Task Force                       M-J. Saarinen, Ed.
 Internet-Draft                                    Independent Consultant
 Intended status: Informational                             J-P. Aumasson
-Expires: August 5, 2015                                Kudelski Security
-                                                        February 1, 2015
+Expires: August 9, 2015                                Kudelski Security
+                                                        February 5, 2015
 
 
                  The BLAKE2 Cryptographic Hash and MAC
-                        draft-saarinen-blake2-01
+                        draft-saarinen-blake2-02
 
 Abstract
 
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 5, 2015.
+   This Internet-Draft will expire on August 9, 2015.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 1]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 1]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 2]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 2]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -127,7 +127,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
    The BLAKE2 suite provides a more efficient alternative to US Secure
    Hash Algorithms SHA and HMAC-SHA [RFC6234].  BLAKE2-128 is especially
-   suited as a fast and more secure plug-in replacement to MD5 and HMAC-
+   suited as a fast and more secure drop-in replacement to MD5 and HMAC-
    MD5 in legacy applications [RFC6151].
 
    A reference implementation in C programming language for BLAKE2b can
@@ -142,7 +142,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in RFC 2119.
+   document are to be interpreted as described in [RFC2119].
 
 2.  Conventions, Variables, and Constants
 
@@ -165,7 +165,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 3]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 3]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -221,7 +221,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 4]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 4]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -246,8 +246,8 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
    We specify the parameter block words p[0..7] as follows:
 
-       byte offset:    3 2 1 0     (otherwise zero)
-             p[0] = 0x0101kknn     p[1..7] = 0
+           byte offset:    3 2 1 0     (otherwise zero)
+                 p[0] = 0x0101kknn     p[1..7] = 0
 
    Here the "nn" byte specifies the hash size in bytes.  The second
    (little-endian) byte of parameter block, "kk", specifies key size in
@@ -264,8 +264,8 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    We define the Initialization Vector constant IV mathematically as:
 
        IV[i] = floor(2**w * frac(sqrt(prime(i+1)))), where prime(i)
-               is the i:th prime number ( 2, 3, 5, 7, 11, 13, 17, 19 )
-               and sqrt(x) is the square root of x.
+           is the i:th prime number ( 2, 3, 5, 7, 11, 13, 17, 19 )
+           and sqrt(x) is the square root of x.
 
    The numerical values of IV can be also found in implementations in
    Appendix A and Appendix B for BLAkE2b and BLAKE2s, respectively.
@@ -277,7 +277,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 5]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 5]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -333,7 +333,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 6]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 6]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -375,8 +375,8 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
        |   |
        |   END FOR
        |
-       |   FOR i = 0 TO 7 DO
-       |   |   h[i] := v[i] ^ v[i + 8]     // XOR the two halves.
+       |   FOR i = 0 TO 7 DO               // XOR the two halves.
+       |   |   h[i] := h[i] ^ v[i] ^ v[i + 8]
        |   END FOR.
        |
        |   RETURN h[0..7]                  // New state.
@@ -389,7 +389,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 7]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 7]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -445,7 +445,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 8]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 8]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -456,7 +456,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
    following digest size parameters for interoperability (e.g. digital
    signatures), as long as sufficient level of security is attained by
    the parameter selections.  These parameters and identifiers are
-   intended to be suitable as plug-in replacements to corresponding SHA
+   intended to be suitable as drop-in replacements to corresponding SHA
    algorithms.
 
    For unkeyed hashing, developers adapting BLAKE2 to ASN.1 - based
@@ -501,7 +501,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                 [Page 9]
+Saarinen & Aumasson      Expires August 9, 2015                 [Page 9]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -557,7 +557,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 10]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 10]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -613,7 +613,7 @@ A.1.  blake2b.h
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 11]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 11]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -669,7 +669,7 @@ A.2.  blake2b.c
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 12]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 12]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -725,7 +725,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 13]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 13]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -781,7 +781,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 14]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 14]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -837,7 +837,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 15]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 15]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -893,7 +893,7 @@ B.1.  blake2s.h
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 16]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 16]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -949,7 +949,7 @@ B.2.  blake2s.c
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 17]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 17]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1005,7 +1005,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 18]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 18]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1061,7 +1061,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 19]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 19]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1117,7 +1117,7 @@ Appendix C.  BLAKE2b and BLAKE2s Self Test Module C Source
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 20]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 20]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1173,7 +1173,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 21]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 21]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1229,7 +1229,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 22]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 22]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1285,7 +1285,7 @@ Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 23]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 23]
 
 Internet-Draft    The BLAKE2 Cryptographic Hash and MAC    February 2015
 
@@ -1341,4 +1341,4 @@ Authors' Addresses
 
 
 
-Saarinen & Aumasson      Expires August 5, 2015                [Page 24]
+Saarinen & Aumasson      Expires August 9, 2015                [Page 24]
