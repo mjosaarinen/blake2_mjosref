@@ -1,23 +1,24 @@
 // blake2s.c
-// 25-Jan-15  Markku-Juhani O. Saarinen <mjos@iki.fi>
-// A simple blake2s Reference Implementation
+// A simple blake2s Reference Implementation.
 
 #include "blake2s.h"
 
-// cyclic right rotation
+// Cyclic right rotation.
 
 #ifndef ROTR32
 #define ROTR32(x, y)  (((x) >> (y)) ^ ((x) << (32 - (y))))
 #endif
 
-// little-endian byte access
+// Little-endian byte access.
+
 #define B2S_GET32(p)                            \
     (((uint32_t) ((uint8_t *) (p))[0]) ^        \
     (((uint32_t) ((uint8_t *) (p))[1]) << 8) ^  \
     (((uint32_t) ((uint8_t *) (p))[2]) << 16) ^ \
     (((uint32_t) ((uint8_t *) (p))[3]) << 24))
 
-// Mixing function G
+// Mixing function G.
+
 #define B2S_G(a, b, c, d, x, y) {   \
     v[a] = v[a] + v[b] + x;         \
     v[d] = ROTR32(v[d] ^ v[a], 16); \
@@ -28,7 +29,7 @@
     v[c] = v[c] + v[d];             \
     v[b] = ROTR32(v[b] ^ v[c], 7); }
 
-// Initialization Vector
+// Initialization Vector.
 
 static const uint32_t blake2s_iv[8] =
 {
@@ -83,7 +84,9 @@ static void blake2s_compress(blake2s_ctx *ctx, int last)
         ctx->h[i] ^= v[i] ^ v[i + 8];
 }
 
-// Initialize the state. key is optional
+// Initialize the hashing context "ctx" with optional key "key".
+//      1 <= outlen <= 32 gives the digest size in bytes.
+//      Secret key (also <= 32 bytes) is optional (keylen = 0).
 
 int blake2s_init(blake2s_ctx *ctx, size_t outlen,
     const void *key, size_t keylen)     // (keylen=0: no key)
@@ -112,7 +115,7 @@ int blake2s_init(blake2s_ctx *ctx, size_t outlen,
     return 0;
 }
 
-// update with new data
+// Add "inlen" bytes from "in" into the hash.
 
 void blake2s_update(blake2s_ctx *ctx,
     const void *in, size_t inlen)       // data bytes
@@ -131,7 +134,8 @@ void blake2s_update(blake2s_ctx *ctx,
     }
 }
 
-// finalize
+// Generate the message digest (size given in init).
+//      Result placed in "out".
 
 void blake2s_final(blake2s_ctx *ctx, void *out)
 {
@@ -152,7 +156,7 @@ void blake2s_final(blake2s_ctx *ctx, void *out)
     }
 }
 
-// convenience function for all-in-one computation
+// Convenience function for all-in-one computation.
 
 int blake2s(void *out, size_t outlen,
     const void *key, size_t keylen,

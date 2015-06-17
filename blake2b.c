@@ -1,16 +1,15 @@
 // blake2b.c
-// 25-Jan-15  Markku-Juhani O. Saarinen <mjos@iki.fi>
-// A simple BLAKE2b Reference Implementation
+// A simple BLAKE2b Reference Implementation.
 
 #include "blake2b.h"
 
-// cyclic right rotation
+// Cyclic right rotation.
 
 #ifndef ROTR64
 #define ROTR64(x, y)  (((x) >> (y)) ^ ((x) << (64 - (y))))
 #endif
 
-// little-endian byte access
+// Little-endian byte access.
 
 #define B2B_GET64(p)                            \
     (((uint64_t) ((uint8_t *) (p))[0]) ^        \
@@ -22,7 +21,7 @@
     (((uint64_t) ((uint8_t *) (p))[6]) << 48) ^ \
     (((uint64_t) ((uint8_t *) (p))[7]) << 56))
 
-// G Mixing function
+// G Mixing function.
 
 #define B2B_G(a, b, c, d, x, y) {   \
     v[a] = v[a] + v[b] + x;         \
@@ -34,7 +33,7 @@
     v[c] = v[c] + v[d];             \
     v[b] = ROTR64(v[b] ^ v[c], 63); }
 
-// Initialization Vector
+// Initialization Vector.
 
 static const uint64_t blake2b_iv[8] = {
     0x6A09E667F3BCC908, 0xBB67AE8584CAA73B,
@@ -92,10 +91,12 @@ static void blake2b_compress(blake2b_ctx *ctx, int last)
         ctx->h[i] ^= v[i] ^ v[i + 8];
 }
 
-// Initialize the state. key is optional
+// Initialize the hashing context "ctx" with optional key "key".
+//      1 <= outlen <= 64 gives the digest size in bytes.
+//      Secret key (also <= 64 bytes) is optional (keylen = 0).
 
 int blake2b_init(blake2b_ctx *ctx, size_t outlen,
-    const void *key, size_t keylen)		// (keylen=0: no key)
+    const void *key, size_t keylen)        // (keylen=0: no key)
 {
     size_t i;
 
@@ -121,7 +122,7 @@ int blake2b_init(blake2b_ctx *ctx, size_t outlen,
     return 0;
 }
 
-// update with new data
+// Add "inlen" bytes from "in" into the hash.
 
 void blake2b_update(blake2b_ctx *ctx,
     const void *in, size_t inlen)       // data bytes
@@ -140,7 +141,8 @@ void blake2b_update(blake2b_ctx *ctx,
     }
 }
 
-// finalize
+// Generate the message digest (size given in init).
+//      Result placed in "out".
 
 void blake2b_final(blake2b_ctx *ctx, void *out)
 {
@@ -150,7 +152,7 @@ void blake2b_final(blake2b_ctx *ctx, void *out)
     if (ctx->t[0] < ctx->c)             // carry overflow
         ctx->t[1]++;                    // high word
 
-    while (ctx->c < 128)            	// fill up with zeros
+    while (ctx->c < 128)                // fill up with zeros
         ctx->b[ctx->c++] = 0;
     blake2b_compress(ctx, 1);           // final block flag = 1
 
@@ -161,7 +163,7 @@ void blake2b_final(blake2b_ctx *ctx, void *out)
     }
 }
 
-// convenience function for all-in-one computation
+// Convenience function for all-in-one computation.
 
 int blake2b(void *out, size_t outlen,
     const void *key, size_t keylen,

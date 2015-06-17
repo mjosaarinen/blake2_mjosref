@@ -27,7 +27,7 @@ void blake2s_update(blake2s_ctx *ctx,   // context
     const void *in, size_t inlen);      // data to be hashed
 
 // Generate the message digest (size given in init).
-//      Result placed in "out"
+//      Result placed in "out".
 void blake2s_final(blake2s_ctx *ctx, void *out);
 
 // All-in-one convenience function.

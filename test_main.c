@@ -1,14 +1,12 @@
 // test_main.c
 // Self test Modules for BLAKE2b and BLAKE2s -- and a stub main().
 
-// 24-Jan-15  Markku-Juhani O. Saarinen <mjos@iki.fi>
-
 #include <stdio.h>
 
 #include "blake2b.h"
 #include "blake2s.h"
 
-// Deterministic sequences (Fibonacci generator)
+// Deterministic sequences (Fibonacci generator).
 
 static void selftest_seq(uint8_t *out, size_t len, uint32_t seed)
 {
@@ -65,7 +63,7 @@ int blake2b_selftest()
     }
 
     // compute and compare the hash of hashes
-    blake2b_final(&ctx, md);  
+    blake2b_final(&ctx, md);
     for (i = 0; i < 32; i++) {
         if (md[i] != blake2b_res[i])
             return -1;
@@ -78,14 +76,14 @@ int blake2b_selftest()
 
 int blake2s_selftest()
 {
-    // grand hash of hash results
+    // Grand hash of hash results.
     const uint8_t blake2s_res[32] = {
         0x6A, 0x41, 0x1F, 0x08, 0xCE, 0x25, 0xAD, 0xCD,
         0xFB, 0x02, 0xAB, 0xA6, 0x41, 0x45, 0x1C, 0xEC,
         0x53, 0xC5, 0x98, 0xB2, 0x4F, 0x4F, 0xC7, 0x87,
         0xFB, 0xDC, 0x88, 0x79, 0x7F, 0x4C, 0x1D, 0xFE
     };
-    // parameter sets
+    // Parameter sets.
     const size_t b2s_md_len[4] = { 16, 20, 28, 32 };
     const size_t b2s_in_len[6] = { 0,  3,  64, 65, 255, 1024 };
 
@@ -93,7 +91,7 @@ int blake2s_selftest()
     uint8_t in[1024], md[32], key[32];
     blake2s_ctx ctx;
 
-    // 256-bit hash for testing
+    // 256-bit hash for testing.
     if (blake2s_init(&ctx, 32, NULL, 0))
         return -1;
 
@@ -112,7 +110,7 @@ int blake2s_selftest()
         }
     }
 
-    // compute and compare the hash of hashes
+    // Compute and compare the hash of hashes.
     blake2s_final(&ctx, md);
     for (i = 0; i < 32; i++) {
         if (md[i] != blake2s_res[i])
@@ -122,7 +120,7 @@ int blake2s_selftest()
     return 0;
 }
 
-// test driver
+// Test driver.
 
 int main(int argc, char **argv)
 {
